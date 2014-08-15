@@ -28,8 +28,8 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   // Read the magic and the meta data
   //uint32_t num_items =55134;
   uint32_t num_labels;
-  uint32_t rows = 48;
-  uint32_t cols = 40;
+  uint32_t rows = 48/2;
+  uint32_t cols = 40/2;
 
   // Open leveldb
   leveldb::DB* db;
@@ -41,7 +41,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   CHECK(status.ok()) << "Failed to open leveldb " << db_filename
       << ". Is it already existing?";
 
-  char label;
+  char label[4];
   char* pixels = new char[rows * cols];
   const int kMaxKeyLength = 10;
   char key[kMaxKeyLength];
@@ -55,9 +55,9 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   LOG(INFO) << "Rows: " << rows << " Cols: " << cols;
   for (int itemid = 0; itemid < num_items; ++itemid) {
     image_file.read(pixels, rows * cols);
-    label_file.read(&label, 1);
+    label_file.read(label, sizeof(label));
     datum.set_data(pixels, rows*cols);
-    datum.set_label(label);
+    datum.set_label(atoi(label));
     datum.SerializeToString(&value);
     snprintf(key, kMaxKeyLength, "%08d", itemid);
     db->Put(leveldb::WriteOptions(), std::string(key), value);

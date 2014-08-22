@@ -13,7 +13,7 @@ rm -rf morph-test-leveldb
 mkdir morph-train-leveldb
 mkdir morph-test-leveldb
 
-$EXAMPLES/convert_morph_data.bin $DATA/morph-image-train.bin $DATA/morph-label-train.bin morph-train-leveldb 44107
-$EXAMPLES/convert_morph_data.bin $DATA/morph-image-test.bin $DATA/morph-label-test.bin morph-test-leveldb 11027
+$EXAMPLES/convert_morph_data.bin $DATA/morph-train-image.bin $DATA/morph-train-label.bin morph-train-leveldb 20000
+$EXAMPLES/convert_morph_data.bin $DATA/morph-test-image.bin $DATA/morph-test-label.bin morph-test-leveldb 8000
 
 echo "Done."

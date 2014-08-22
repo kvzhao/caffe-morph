@@ -17,6 +17,25 @@
 
 #include "caffe/proto/caffe.pb.h"
 
+int relabel(int l) {
+    int label;
+    if (l < 0)
+        return -1;
+    if( l >=1 && l < 20) {
+        label = 0;
+    } else if( l >= 20 && l< 30) {
+        label =1;
+    } else if( l >= 30 && l < 40) {
+        label =2;
+    } else if( l >= 40 && l < 50) {
+        label =3;
+    } else if( l >= 50) {
+        label =4;
+    } 
+    return label;
+}
+
+
 void convert_dataset(const char* image_filename, const char* label_filename,
         const char* db_filename, const uint32_t num_items) {
   // Open files
@@ -28,8 +47,8 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   // Read the magic and the meta data
   //uint32_t num_items =55134;
   uint32_t num_labels;
-  uint32_t rows = 48/2;
-  uint32_t cols = 40/2;
+  uint32_t rows = 36;
+  uint32_t cols = 30;
 
   // Open leveldb
   leveldb::DB* db;
@@ -41,7 +60,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   CHECK(status.ok()) << "Failed to open leveldb " << db_filename
       << ". Is it already existing?";
 
-  char label[4];
+  int label;
   char* pixels = new char[rows * cols];
   const int kMaxKeyLength = 10;
   char key[kMaxKeyLength];
@@ -55,9 +74,9 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   LOG(INFO) << "Rows: " << rows << " Cols: " << cols;
   for (int itemid = 0; itemid < num_items; ++itemid) {
     image_file.read(pixels, rows * cols);
-    label_file.read(label, sizeof(label));
+    label_file.read((char*)&label, sizeof(int));
     datum.set_data(pixels, rows*cols);
-    datum.set_label(atoi(label));
+    datum.set_label(relabel(label));
     datum.SerializeToString(&value);
     snprintf(key, kMaxKeyLength, "%08d", itemid);
     db->Put(leveldb::WriteOptions(), std::string(key), value);

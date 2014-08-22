@@ -6,7 +6,7 @@ layers {
   top: "label"
   data_param {
     source: "morph-test-leveldb"
-    batch_size: 1
+    batch_size: 3 
   }
 }
 layers {
@@ -15,7 +15,7 @@ layers {
   bottom: "data"
   top: "conv1"
   convolution_param {
-    num_output: 20
+    num_output: 10
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -43,7 +43,7 @@ layers {
   bottom: "pool1"
   top: "conv2"
   convolution_param {
-    num_output: 50
+    num_output: 15
     kernel_size: 5
     stride: 1
     weight_filler {
@@ -71,7 +71,7 @@ layers {
   bottom: "pool2"
   top: "ip1"
   inner_product_param {
-    num_output: 500
+    num_output: 90
     weight_filler {
       type: "xavier"
     }
@@ -92,7 +92,7 @@ layers {
   bottom: "ip1"
   top: "ip2"
   inner_product_param {
-    num_output: 10
+    num_output: 5
     weight_filler {
       type: "xavier"
     }
